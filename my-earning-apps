@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Irfan Technology</title>
+
+    <style>
+
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        .container { background-color: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+
+        h1 { color: #007bff; margin-bottom: 10px; }
+
+        p { margin-bottom: 20px; font-size: 1.1em; }
+
+        .stats { display: flex; justify-content: space-around; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 8px; }
+
+        .stat { text-align: center; }
+
+        .stat-value { font-size: 1.5em; font-weight: bold; color: #28a745; }
+
+        .stat-label { font-size: 0.9em; color: #6c757d; }
+
+        .button-group { display: flex; flex-direction: column; gap: 10px; }
+
+        button { background-color: #007bff; color: white; border: none; padding: 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.3s; }
+
+        button:hover { background-color: #0056b3; }
+
+        .withdraw-btn { background-color: #28a745; }
+
+        .withdraw-btn:hover { background-color: #218838; }
+
+        .reset-btn { background-color: #dc3545; }
+
+        .reset-btn:hover { background-color: #c82333; }
+
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; }
+
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+
+        input, select { width: calc(100% - 22px); padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+
+    </style>
+
+    
+
+    <!-- *** এখানে নতুন মূল স্ক্রিপ্ট ট্যাগটি বসানো হয়েছে *** -->
+
+    <script src='//libtl.com/sdk.js' data-zone='11952583' data-sdk='show_11952583'></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Telegram Mini Self Earning App </h1>
+
+        <p>Developed by Md.SUVO</p>
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div id="ads-watched" class="stat-value">0</div>
+
+                <div class="stat-label">Completed Ads</div>
+
+            </div>
+
+            <div class="stat">
+
+                <div id="earned-points" class="stat-value">0</div>
+
+                <div class="stat-label">Total Points</div>
+
+            </div>
+
+        </div>
+
+        <div class="button-group">
+
+            <button onclick="show_rewarded_interstitial()">Reward Interstitial</button>
+
+            <button onclick="show_rewarded_popup()">Reward Popup</button>
+
+            <button onclick="show_in_app_interstitial()">In-App Interstitial</button>
+
+            <button class="withdraw-btn" onclick="openWithdrawModal()">Withdraw</button>
+
+            <button class="reset-btn" onclick="resetStats()">Reset Count</button>
+
+        </div>
+
+    </div>
+
+    <!-- Withdraw Modal -->
+
+    <div id="withdrawModal" class="modal">
+
+        <div class="modal-content">
+
+            <span class="close" onclick="closeWithdrawModal()">&times;</span>
+
+            <h2>Withdraw Points</h2>
+
+            <form id="withdrawForm">
+
+                <select id="paymentMethod" required>
+
+                    <option value="">Select Payment Method</option>
+
+                    <option value="Bkash">Bkash</option>
+
+                    <option value="Nagad">Nagad</option>
+
+                    <option value="Rocket">Rocket</option>
+
+                </select>
+
+                <input type="text" id="accountNumber" placeholder="Enter Account Number" required>
+
+                <input type="number" id="pointsToWithdraw" placeholder="Enter Points to Withdraw" required>
+
+                <button type="submit">Send Withdraw Request</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let adsWatched = localStorage.getItem('adsWatched') ? parseInt(localStorage.getItem('adsWatched')) : 0;
+
+        let earnedPoints = localStorage.getItem('earnedPoints') ? parseInt(localStorage.getItem('earnedPoints')) : 0;
+
+        function updateStats() {
+
+            document.getElementById('ads-watched').innerText = adsWatched;
+
+            document.getElementById('earned-points').innerText = earnedPoints;
+
+            localStorage.setItem('adsWatched', adsWatched);
+
+            localStorage.setItem('earnedPoints', earnedPoints);
+
+        }
+
+        function resetStats() {
+
+            if (confirm("Are you sure you want to reset your stats? This action cannot be undone.")) {
+
+                adsWatched = 0;
+
+                earnedPoints = 0;
+
+                updateStats();
+
+                alert("Stats have been reset successfully.");
+
+            }
+
+        }
+
+        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
+
+        function show_rewarded_interstitial() {
+
+            show_11952583().then(() => {
+
+                adsWatched++;
+
+                earnedPoints += 1;
+
+                updateStats();
+
+            }).catch(e => {
+
+                console.error("Ad error:", e);
+
+            });
+
+        }
+
+        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
+
+        function show_rewarded_popup() {
+
+            show_11952583('pop').then(() => {
+
+                adsWatched++;
+
+                earnedPoints += 1;
+
+                updateStats();
+
+            }).catch(e => {
+
+                console.error("Popup ad error:", e);
+
+            });
+
+        }
+
+        
+
+        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
+
+        function show_in_app_interstitial() {
+
+            show_11952583({
+
+              type: 'inApp',
+
+              inAppSettings: {
+
+                frequency: 2,
+
+                capping: 0.1,
+
+                interval: 30,
+
+                timeout: 5,
+
+                everyPage: false
+
+              }
+
+            });
+
+            
+
+            adsWatched++;
+
+            earnedPoints += 1;
+
+            updateStats();
+
+        }
+
+        // Withdraw Modal Logic
+
+        const modal = document.getElementById('withdrawModal');
+
+        function openWithdrawModal() {
+
+            modal.style.display = 'block';
+
+        }
+
+        function closeWithdrawModal() {
+
+            modal.style.display = 'none';
+
+        }
+
+        window.onclick = function(event) {
+
+            if (event.target == modal) {
+
+                closeWithdrawModal();
+
+            }
+
+        }
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+
+            e.preventDefault();
+
+            const method = document.getElementById('paymentMethod').value;
+
+            const number = document.getElementById('accountNumber').value;
+
+            const points = parseInt(document.getElementById('pointsToWithdraw').value);
+
+            if (points > earnedPoints) {
+
+                alert("You don't have enough points to withdraw!");
+
+                return;
+
+            }
+
+            const botToken = 'aa';
+
+            const chatId = 'aaaa';
+
+            const message = `New Withdraw Request:\n\nPayment Method: ${method}\nAccount Number: ${number}\nPoints: ${points}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            fetch(url)
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.ok) {
+
+                        alert('Withdraw request sent successfully!');
+
+                        earnedPoints -= points;
+
+                        updateStats();
+
+                        closeWithdrawModal();
+
+                    } else {
+
+                        alert('Failed to send request. Please try again.');
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.error('Error:', error);
+
+                    alert('An error occurred. Please try again.');
+
+                });
+
+        });
+
+        // Initial load
+
+        updateStats();
+
+    </script>
+
+</body>
+
+</html>
