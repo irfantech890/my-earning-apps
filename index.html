@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Crypto Mining & Rewards Mini App</title>
+  <title>Crypto Mining & Spin Mini App</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- FontAwesome Icons -->
@@ -17,89 +17,168 @@
       --accent-glow: rgba(0, 255, 136, 0.35);
       --text-color: #ffffff;
       --text-dim: #8a99ad;
+      --gold: #ffd700;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; user-select: none; }
-    body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; }
+    body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; overflow-x: hidden; }
 
-    .header-card { width: 100%; max-width: 400px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    /* Header Profile Card */
+    .header-card { width: 100%; max-width: 400px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .user-info { display: flex; align-items: center; gap: 10px; }
     .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: #232d3f; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--accent-color); border: 2px solid var(--accent-color); }
     .balance-amount { font-size: 22px; font-weight: 800; color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
 
-    .tap-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0; }
-    .tap-button { width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); border: 4px solid var(--accent-color); box-shadow: 0 0 30px var(--accent-glow); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-    .tap-button:active { transform: scale(0.94); }
-    .tap-button i { font-size: 60px; color: var(--accent-color); }
+    /* Navigation Tabs */
+    .nav-tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 16px; }
+    .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); color: var(--text-dim); border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; }
+    .tab-btn.active { background: var(--accent-color); color: #000; box-shadow: 0 0 10px var(--accent-glow); }
 
-    .energy-container { width: 100%; max-width: 400px; margin-top: 15px; }
+    .tab-content { width: 100%; max-width: 400px; display: none; }
+    .tab-content.active { display: block; }
+
+    /* Tap Mining Section */
+    .tap-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 15px 0; }
+    .tap-button { width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); border: 4px solid var(--accent-color); box-shadow: 0 0 30px var(--accent-glow); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+    .tap-button:active { transform: scale(0.94); }
+    .tap-button i { font-size: 55px; color: var(--accent-color); }
+
+    .energy-container { width: 100%; margin-top: 10px; }
     .energy-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
     .energy-bar-bg { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; }
     .energy-bar-fill { width: 100%; height: 100%; background: var(--accent-color); transition: width 0.3s ease; }
 
-    .task-hub { width: 100%; max-width: 400px; margin-top: 24px; }
-    .hub-title { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    /* Spin Wheel Section */
+    .spin-container { background: var(--card-bg); border-radius: 16px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+    .wheel-box { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--gold); margin: 15px auto; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; color: var(--gold); background: radial-gradient(circle, #2d1f00 0%, #0f172a 100%); box-shadow: 0 0 20px rgba(255,215,0,0.2); }
+
+    /* Task Cards */
     .task-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .task-info { display: flex; align-items: center; gap: 12px; }
-    .task-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(0, 255, 136, 0.1); color: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .task-btn { background: var(--accent-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
-    .task-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+    .task-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(0, 255, 136, 0.1); color: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    
+    .action-btn { background: var(--accent-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-    .toast { position: fixed; bottom: 20px; background: #1e293b; color: #fff; border: 1px solid var(--accent-color); padding: 12px 24px; border-radius: 30px; font-size: 12px; display: none; z-index: 100; }
+    .toast { position: fixed; bottom: 20px; background: #1e293b; color: #fff; border: 1px solid var(--accent-color); padding: 12px 24px; border-radius: 30px; font-size: 12px; display: none; z-index: 100; text-align: center; }
   </style>
+
+  <!-- Monetag Dedicated Telegram Mini App (TMA) SDK Scripts -->
+  <script src="//libtl.com/sdk.js" data-zone="12106123" data-sdk="show_12106123"></script>
+  <script src="//libtl.com/sdk.js" data-zone="12106130" data-sdk="show_12106130"></script>
+  <script src="//libtl.com/sdk.js" data-zone="12106139" data-sdk="show_12106139"></script>
 </head>
 <body>
 
+  <!-- Top Header -->
   <div class="header-card">
     <div class="user-info">
       <div class="user-avatar" id="uAvatar">U</div>
       <div>
         <div id="uName" style="font-weight: 700; font-size: 14px;">User</div>
-        <div style="font-size: 10px; color: var(--text-dim);">Mining Active</div>
+        <div style="font-size: 10px; color: var(--text-dim);">Ads Watched: <span id="adCount" style="color:var(--accent-color);">0</span></div>
       </div>
     </div>
     <div>
-      <div style="font-size: 11px; color: var(--text-dim); text-align: right;">TOKENS</div>
+      <div style="font-size: 10px; color: var(--text-dim); text-align: right;">TOKENS</div>
       <div class="balance-amount" id="coinBalance">0</div>
     </div>
   </div>
 
-  <div class="tap-section">
-    <div class="tap-button" id="tapBtn">
-      <i class="fa-solid fa-bolt"></i>
-      <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--text-dim);">TAP TO MINE</div>
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <div class="tab-btn active" onclick="switchTab('tapTab', this)">MINING</div>
+    <div class="tab-btn" onclick="switchTab('spinTab', this)">SPIN & WIN</div>
+    <div class="tab-btn" onclick="switchTab('taskTab', this)">DAILY TASKS</div>
+  </div>
+
+  <!-- TAB 1: TAP MINING -->
+  <div id="tapTab" class="tab-content active">
+    <div class="tap-section">
+      <div class="tap-button" id="tapBtn">
+        <i class="fa-solid fa-bolt"></i>
+        <div style="margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-dim);">TAP TO MINE</div>
+      </div>
+    </div>
+
+    <div class="energy-container">
+      <div class="energy-stats">
+        <span><i class="fa-solid fa-battery-half"></i> Energy</span>
+        <span id="energyText">500 / 500</span>
+      </div>
+      <div class="energy-bar-bg">
+        <div class="energy-bar-fill" id="energyFill"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px;">
+      <div class="task-card">
+        <div class="task-info">
+          <div class="task-icon"><i class="fa-solid fa-charging-station"></i></div>
+          <div>
+            <h4 style="font-size: 13px;">Refill Full Energy</h4>
+            <p style="font-size: 10px; color: var(--accent-color);">Watch 1 Ad</p>
+          </div>
+        </div>
+        <button class="action-btn" onclick="playTmaAd('refill', this)">REFILL</button>
+      </div>
     </div>
   </div>
 
-  <div class="energy-container">
-    <div class="energy-stats">
-      <span><i class="fa-solid fa-battery-half"></i> Energy</span>
-      <span id="energyText">500 / 500</span>
-    </div>
-    <div class="energy-bar-bg">
-      <div class="energy-bar-fill" id="energyFill"></div>
+  <!-- TAB 2: SPIN WHEEL -->
+  <div id="spinTab" class="tab-content">
+    <div class="spin-container">
+      <h3 style="font-size: 16px; color: var(--gold);"><i class="fa-solid fa-crown"></i> Lucky Reward Wheel</h3>
+      <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Watch an ad to spin and win tokens!</p>
+      
+      <div class="wheel-box" id="wheelText">SPIN NOW</div>
+
+      <button class="action-btn" style="background: var(--gold); width: 100%; padding: 12px; font-size: 14px;" onclick="playTmaAd('spin', this)">SPIN (WATCH AD)</button>
     </div>
   </div>
 
-  <div class="task-hub">
-    <div class="hub-title"><i class="fa-solid fa-gem" style="color: var(--accent-color);"></i> High Reward Tasks</div>
+  <!-- TAB 3: DAILY TASKS HUB -->
+  <div id="taskTab" class="tab-content">
+    <div style="margin-bottom: 10px; font-size: 12px; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Complete Tasks for Rewards</div>
+    
+    <div class="task-card">
+      <div class="task-info">
+        <div class="task-icon"><i class="fa-solid fa-play"></i></div>
+        <div>
+          <h4 style="font-size: 13px;">Ad Booster #1</h4>
+          <p style="font-size: 10px; color: var(--accent-color);">+500 Tokens</p>
+        </div>
+      </div>
+      <button class="action-btn" onclick="playTmaAd('task', this)">CLAIM</button>
+    </div>
 
     <div class="task-card">
       <div class="task-info">
         <div class="task-icon"><i class="fa-solid fa-play"></i></div>
         <div>
-          <h4>Watch Ad Booster</h4>
-          <p style="font-size:11px; color: var(--accent-color);">+500 Tokens</p>
+          <h4 style="font-size: 13px;">Ad Booster #2</h4>
+          <p style="font-size: 10px; color: var(--accent-color);">+500 Tokens</p>
         </div>
       </div>
-      <button class="task-btn" id="watchAdBtn" onclick="openMonetagAd()">CLAIM</button>
+      <button class="action-btn" onclick="playTmaAd('task', this)">CLAIM</button>
+    </div>
+
+    <div class="task-card">
+      <div class="task-info">
+        <div class="task-icon"><i class="fa-solid fa-gem"></i></div>
+        <div>
+          <h4 style="font-size: 13px;">Super Bonus Box</h4>
+          <p style="font-size: 10px; color: var(--accent-color);">+1,000 Tokens</p>
+        </div>
+      </div>
+      <button class="action-btn" onclick="playTmaAd('task', this)">CLAIM</button>
     </div>
   </div>
 
   <div class="toast" id="toastMsg"></div>
 
   <script>
-    // Telegram WebApp Config
+    // --- TELEGRAM WEBAPP INIT ---
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.expand(); tg.ready(); }
 
@@ -109,25 +188,43 @@
     document.getElementById('uName').innerText = userName;
     document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
 
+    // --- APP STORAGE ---
     let coins = parseInt(localStorage.getItem('user_coins')) || 0;
     let energy = parseInt(localStorage.getItem('user_energy')) || 500;
+    let adsWatched = parseInt(localStorage.getItem('ads_watched')) || 0;
     const maxEnergy = 500;
 
     document.getElementById('coinBalance').innerText = coins.toLocaleString();
+    document.getElementById('adCount').innerText = adsWatched;
 
+    // --- NAVIGATION TABS ---
+    function switchTab(tabId, btnElem) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btnElem.classList.add('active');
+    }
+
+    // --- TAP MINING ENGINE ---
     document.getElementById('tapBtn').addEventListener('click', () => {
       if (energy >= 1) {
         coins += 1;
         energy -= 1;
-        document.getElementById('coinBalance').innerText = coins.toLocaleString();
-        document.getElementById('energyText').innerText = `${energy} / `${maxEnergy}`;
-        document.getElementById('energyFill').style.width = (energy / maxEnergy * 100) + "%";
-        localStorage.setItem('user_coins', coins);
-        localStorage.setItem('user_energy', energy);
+        updateStats();
       } else {
-        showToast("Energy Empty!");
+        showToast("Energy Empty! Watch an Ad to Refill.");
       }
     });
+
+    function updateStats() {
+      document.getElementById('coinBalance').innerText = coins.toLocaleString();
+      document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
+      document.getElementById('energyFill').style.width = (energy / maxEnergy * 100) + "%";
+      document.getElementById('adCount').innerText = adsWatched;
+      localStorage.setItem('user_coins', coins);
+      localStorage.setItem('user_energy', energy);
+      localStorage.setItem('ads_watched', adsWatched);
+    }
 
     function showToast(msg) {
       const toast = document.getElementById('toastMsg');
@@ -136,25 +233,63 @@
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    // --- MONETAG DIRECT LINK / SMARTLINK SYSTEM ---
-    // এখানে আপনার Monetag Direct Link বা SmartLink বসিয়ে দিন
-    const monetagAdLink = "https://your-monetag-direct-link-here.com"; 
+    // --- MONETAG 3-ZONE ROTATION & TMA SDK ENGINE ---
+    const tmaZones = ['12106123', '12106130', '12106139'];
+    let currentZoneIdx = 0;
 
-    function openMonetagAd() {
-      // টেলিগ্রামের নেটিভ ব্রাউজারে লিংক ওপেন করার নিরাপদ মেথড (কোনো Access Denied দিবে না)
-      if (tg && tg.openLink) {
-        tg.openLink(monetagAdLink);
-      } else {
-        window.open(monetagAdLink, '_blank');
+    function playTmaAd(type, btnElem) {
+      const originalText = btnElem.innerText;
+      btnElem.disabled = true;
+      btnElem.innerText = "Loading...";
+
+      attemptShowAd(0, type, btnElem, originalText);
+    }
+
+    function attemptShowAd(retryCount, type, btnElem, originalText) {
+      if (retryCount >= tmaZones.length) {
+        showToast("No ads available right now. Try again!");
+        btnElem.disabled = false;
+        btnElem.innerText = originalText;
+        return;
       }
 
-      // ইউজার বিজ্ঞাপন দেখার পর রিওয়ার্ড যোগ করার লজিক
-      setTimeout(() => {
-        coins += 500;
-        localStorage.setItem('user_coins', coins);
-        document.getElementById('coinBalance').innerText = coins.toLocaleString();
-        showToast("Success! +500 Tokens added.");
-      }, 2000);
+      // 3 Zone Rotation
+      const activeZone = tmaZones[currentZoneIdx];
+      currentZoneIdx = (currentZoneIdx + 1) % tmaZones.length;
+
+      const sdkFn = `show_${activeZone}`;
+
+      if (typeof window[sdkFn] === 'function') {
+        window[sdkFn]({
+          ymid: userId.toString()
+        }).then(() => {
+          // Reward logic on successful ad view
+          adsWatched += 1;
+
+          if (type === 'refill') {
+            energy = maxEnergy;
+            showToast("Energy Restored!");
+          } else if (type === 'spin') {
+            const reward = Math.floor(Math.random() * 1500) + 500;
+            coins += reward;
+            document.getElementById('wheelText').innerText = `+${reward}`;
+            showToast(`Spin Win: +${reward} Tokens!`);
+          } else {
+            coins += 500;
+            showToast("Task Done: +500 Tokens!");
+          }
+
+          updateStats();
+          btnElem.disabled = false;
+          btnElem.innerText = originalText;
+        }).catch((err) => {
+          console.log(`Zone ${activeZone} skipped or failed, trying next...`, err);
+          attemptShowAd(retryCount + 1, type, btnElem, originalText);
+        });
+      } else {
+        console.log(`SDK Function ${sdkFn} not ready, trying next zone...`);
+        attemptShowAd(retryCount + 1, type, btnElem, originalText);
+      }
     }
   </script>
 </body>
