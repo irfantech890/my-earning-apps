@@ -17,283 +17,68 @@
       --accent-glow: rgba(0, 255, 136, 0.35);
       --text-color: #ffffff;
       --text-dim: #8a99ad;
-      --warning-color: #ffaa00;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; user-select: none; }
+    body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
-      overflow-x: hidden;
-    }
+    .header-card { width: 100%; max-width: 400px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: #232d3f; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--accent-color); border: 2px solid var(--accent-color); }
+    .balance-amount { font-size: 22px; font-weight: 800; color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
 
-    .header-card {
-      width: 100%;
-      max-width: 400px;
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      margin-bottom: 20px;
-    }
+    .tap-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0; }
+    .tap-button { width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); border: 4px solid var(--accent-color); box-shadow: 0 0 30px var(--accent-glow); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+    .tap-button:active { transform: scale(0.94); }
+    .tap-button i { font-size: 60px; color: var(--accent-color); }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .energy-container { width: 100%; max-width: 400px; margin-top: 15px; }
+    .energy-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+    .energy-bar-bg { width: 100%; height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; }
+    .energy-bar-fill { width: 100%; height: 100%; background: var(--accent-color); transition: width 0.3s ease; }
 
-    .user-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #232d3f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: var(--accent-color);
-      border: 2px solid var(--accent-color);
-    }
+    .task-hub { width: 100%; max-width: 400px; margin-top: 24px; }
+    .hub-title { font-size: 13px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .task-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .task-info { display: flex; align-items: center; gap: 12px; }
+    .task-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(0, 255, 136, 0.1); color: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .task-btn { background: var(--accent-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .task-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-    .balance-container {
-      text-align: right;
-    }
-
-    .balance-title {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .balance-amount {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--accent-color);
-      text-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    .tap-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-    .tap-button {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
-      border: 4px solid var(--accent-color);
-      box-shadow: 0 0 30px var(--accent-glow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.2s ease;
-    }
-
-    .tap-button:active {
-      transform: scale(0.94);
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-
-    .tap-button i {
-      font-size: 60px;
-      color: var(--accent-color);
-    }
-
-    .tap-text {
-      margin-top: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-    }
-
-    .energy-container {
-      width: 100%;
-      max-width: 400px;
-      margin-top: 15px;
-    }
-
-    .energy-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-dim);
-      margin-bottom: 6px;
-    }
-
-    .energy-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: #1e293b;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .energy-bar-fill {
-      width: 100%;
-      height: 100%;
-      background: var(--accent-color);
-      box-shadow: 0 0 8px var(--accent-glow);
-      transition: width 0.3s ease;
-    }
-
-    .task-hub {
-      width: 100%;
-      max-width: 400px;
-      margin-top: 24px;
-    }
-
-    .hub-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .task-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .task-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .task-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: rgba(0, 255, 136, 0.1);
-      color: var(--accent-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .task-details h4 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .task-details p {
-      font-size: 11px;
-      color: var(--accent-color);
-      margin-top: 2px;
-    }
-
-    .task-btn {
-      background: var(--accent-color);
-      color: #000;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background 0.2s, opacity 0.2s;
-    }
-
-    .task-btn:disabled {
-      background: #334155;
-      color: #94a3b8;
-      cursor: not-allowed;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      background: #1e293b;
-      color: var(--text-color);
-      border: 1px solid var(--accent-color);
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-size: 12px;
-      display: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      z-index: 100;
-    }
+    .toast { position: fixed; bottom: 20px; background: #1e293b; color: #fff; border: 1px solid var(--accent-color); padding: 12px 24px; border-radius: 30px; font-size: 12px; display: none; z-index: 100; }
   </style>
 
-  <!-- Monetag 3 Zone Scripts (Zone IDs: 12106123, 12106130, 12106139) -->
-  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106123" async data-cfasync="false"></script>
-  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106130" async data-cfasync="false"></script>
-  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106139" async data-cfasync="false"></script>
+  <!-- Monetag Dedicated Telegram Mini App (TMA) SDK Scripts -->
+  <script src="//libtl.com/sdk.js" data-zone="12106123" data-sdk="show_12106123"></script>
+  <script src="//libtl.com/sdk.js" data-zone="12106130" data-sdk="show_12106130"></script>
+  <script src="//libtl.com/sdk.js" data-zone="12106139" data-sdk="show_12106139"></script>
 </head>
 <body>
 
-  <!-- 1. Bot & Automation Protection Script -->
-  <script>
-    if (navigator.webdriver || window.outerWidth === 0 || window.outerHeight === 0) {
-        document.body.innerHTML = "<h2 style='color:#ff4d4d; text-align:center; margin-top:100px; font-family:sans-serif;'>Access Denied: Automated Environment Blocked</h2>";
-        throw new Error("Bot blocked");
-    }
-  </script>
-
-  <!-- Top Stats -->
   <div class="header-card">
     <div class="user-info">
       <div class="user-avatar" id="uAvatar">U</div>
       <div>
         <div id="uName" style="font-weight: 700; font-size: 14px;">User</div>
-        <div style="font-size: 10px; color: var(--text-dim);">Global Active Member</div>
+        <div style="font-size: 10px; color: var(--text-dim);">Mining Active</div>
       </div>
     </div>
-    <div class="balance-container">
-      <div class="balance-title">Tokens</div>
+    <div>
+      <div style="font-size: 11px; color: var(--text-dim); text-align: right;">TOKENS</div>
       <div class="balance-amount" id="coinBalance">0</div>
     </div>
   </div>
 
-  <!-- Tap Mining -->
   <div class="tap-section">
     <div class="tap-button" id="tapBtn">
       <i class="fa-solid fa-bolt"></i>
-      <div class="tap-text">TAP TO MINE</div>
+      <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--text-dim);">TAP TO MINE</div>
     </div>
   </div>
 
-  <!-- Energy Bar -->
   <div class="energy-container">
     <div class="energy-stats">
-      <span><i class="fa-solid fa-battery-half"></i> Energy Left</span>
+      <span><i class="fa-solid fa-battery-half"></i> Energy</span>
       <span id="energyText">500 / 500</span>
     </div>
     <div class="energy-bar-bg">
@@ -301,50 +86,30 @@
     </div>
   </div>
 
-  <!-- Task Hub -->
   <div class="task-hub">
-    <div class="hub-title">
-      <i class="fa-solid fa-gem" style="color: var(--accent-color);"></i>
-      High Reward Tasks
-    </div>
+    <div class="hub-title"><i class="fa-solid fa-gem" style="color: var(--accent-color);"></i> High Reward Tasks</div>
 
-    <!-- Task 1 -->
     <div class="task-card">
       <div class="task-info">
         <div class="task-icon"><i class="fa-solid fa-play"></i></div>
-        <div class="task-details">
+        <div>
           <h4>Watch Ad Booster</h4>
-          <p>+500 Tokens (2 Min Cooldown)</p>
+          <p style="font-size:11px; color: var(--accent-color);">+500 Tokens</p>
         </div>
       </div>
-      <button class="task-btn" id="watchAdBtn" onclick="triggerRewardedAd()">CLAIM</button>
-    </div>
-
-    <!-- Task 2 -->
-    <div class="task-card">
-      <div class="task-info">
-        <div class="task-icon"><i class="fa-solid fa-charging-station"></i></div>
-        <div class="task-details">
-          <h4>Instant Full Energy</h4>
-          <p>Restore 500/500 Energy</p>
-        </div>
-      </div>
-      <button class="task-btn" id="refillBtn" onclick="triggerRefillAd()">REFILL</button>
+      <button class="task-btn" id="watchAdBtn" onclick="showAdWithRotation()">CLAIM</button>
     </div>
   </div>
 
-  <div class="toast" id="toastMsg">Ad rewarded successfully!</div>
+  <div class="toast" id="toastMsg"></div>
 
   <script>
-    // --- TELEGRAM WEBAPP INIT ---
+    // Telegram WebApp Config
     const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.expand();
-      tg.ready();
-    }
+    if (tg) { tg.expand(); tg.ready(); }
 
-    const userId = tg?.initDataUnsafe?.user?.id || "USER_" + Math.floor(Math.random() * 899999 + 100000);
-    const userName = tg?.initDataUnsafe?.user?.first_name || "Guest User";
+    const userId = tg?.initDataUnsafe?.user?.id || "USER_123456";
+    const userName = tg?.initDataUnsafe?.user?.first_name || "Guest";
 
     document.getElementById('uName').innerText = userName;
     document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
@@ -352,41 +117,22 @@
     let coins = parseInt(localStorage.getItem('user_coins')) || 0;
     let energy = parseInt(localStorage.getItem('user_energy')) || 500;
     const maxEnergy = 500;
-    let lastAdTime = parseInt(localStorage.getItem('last_ad_time')) || 0;
 
     document.getElementById('coinBalance').innerText = coins.toLocaleString();
-    updateEnergyUI();
 
     document.getElementById('tapBtn').addEventListener('click', () => {
       if (energy >= 1) {
         coins += 1;
         energy -= 1;
-        saveData();
-        updateEnergyUI();
         document.getElementById('coinBalance').innerText = coins.toLocaleString();
+        document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
+        document.getElementById('energyFill').style.width = (energy / maxEnergy * 100) + "%";
+        localStorage.setItem('user_coins', coins);
+        localStorage.setItem('user_energy', energy);
       } else {
-        showToast("Energy Empty! Watch an Ad to refill.");
+        showToast("Energy Empty!");
       }
     });
-
-    setInterval(() => {
-      if (energy < maxEnergy) {
-        energy = Math.min(maxEnergy, energy + 1);
-        updateEnergyUI();
-        saveData();
-      }
-    }, 3000);
-
-    function updateEnergyUI() {
-      document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
-      const percentage = (energy / maxEnergy) * 100;
-      document.getElementById('energyFill').style.width = percentage + "%";
-    }
-
-    function saveData() {
-      localStorage.setItem('user_coins', coins);
-      localStorage.setItem('user_energy', energy);
-    }
 
     function showToast(msg) {
       const toast = document.getElementById('toastMsg');
@@ -395,107 +141,53 @@
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    // --- 3-ZONE ROTATION & FALLBACK SYSTEM ---
-    const zoneIds = ['12106123', '12106130', '12106139'];
-    let currentZoneIndex = 0;
+    // Monetag TMA SDK Execution with 3-Zone Rotation
+    const sdkZones = ['12106123', '12106130', '12106139'];
+    let currentIdx = 0;
 
-    function getRotatedZoneId() {
-      const zoneId = zoneIds[currentZoneIndex];
-      currentZoneIndex = (currentZoneIndex + 1) % zoneIds.length;
-      return zoneId;
-    }
-
-    function preloadMonetagAd() {
-      const activeZone = getRotatedZoneId();
-      const fnName = `show_${activeZone}`;
-      if (typeof window[fnName] === 'function') {
-        window[fnName]({
-          type: 'preload',
-          ymid: userId.toString(),
-          requestVar: 'tma_mining_app'
-        }).then(() => {
-          console.log(`Zone ${activeZone} Preloaded Successfully.`);
-        }).catch(err => console.log("Preload Error:", err));
-      }
-    }
-
-    window.addEventListener('load', () => {
-      setTimeout(preloadMonetagAd, 2000);
-      checkAdCooldown();
-    });
-
-    function checkAdCooldown() {
-      const now = Date.now();
+    function showAdWithRotation() {
       const btn = document.getElementById('watchAdBtn');
-      if (now - lastAdTime < 120000) {
-        const remainingSec = Math.ceil((120000 - (now - lastAdTime)) / 1000);
-        btn.disabled = true;
-        btn.innerText = `${remainingSec}s`;
-        setTimeout(checkAdCooldown, 1000);
-      } else {
-        btn.disabled = false;
-        btn.innerText = "CLAIM";
-      }
+      btn.disabled = true;
+      btn.innerText = "Loading...";
+
+      attemptZoneAd(0);
     }
 
-    // Task 1: Rewarded Ad (With Page Visibility & Bot Protection)
-    function triggerRewardedAd() {
-      if (document.hidden) {
-        showToast("Please stay active on the app to watch the ad!");
+    function attemptZoneAd(retryCount) {
+      if (retryCount >= sdkZones.length) {
+        showToast("No ads available right now. Try again later.");
+        resetBtn();
         return;
       }
 
-      attemptShowAd(0, (rewarded) => {
-        coins += 500;
-        lastAdTime = Date.now();
-        localStorage.setItem('last_ad_time', lastAdTime);
-        saveData();
-        document.getElementById('coinBalance').innerText = coins.toLocaleString();
-        showToast("Success! +500 Tokens added.");
-        checkAdCooldown();
-        preloadMonetagAd();
-      });
-    }
+      const zoneId = sdkZones[currentIdx];
+      currentIdx = (currentIdx + 1) % sdkZones.length; // Rotation
 
-    // Task 2: Energy Refill Ad (With Page Visibility & Bot Protection)
-    function triggerRefillAd() {
-      if (document.hidden) {
-        showToast("Please stay active on the app to watch the ad!");
-        return;
-      }
-
-      attemptShowAd(0, (rewarded) => {
-        energy = maxEnergy;
-        updateEnergyUI();
-        saveData();
-        showToast("Energy fully restored!");
-        preloadMonetagAd();
-      });
-    }
-
-    // Fallback Ad Executor Across Your 3 Zones
-    function attemptShowAd(retryCount, successCallback) {
-      if (retryCount >= zoneIds.length) {
-        showToast("Ad not available right now. Try again later.");
-        return;
-      }
-
-      const zoneId = zoneIds[(currentZoneIndex + retryCount) % zoneIds.length];
       const fnName = `show_${zoneId}`;
 
       if (typeof window[fnName] === 'function') {
         window[fnName]({
-          type: 'end',
           ymid: userId.toString()
-        }).then((result) => {
-          successCallback(result);
+        }).then(() => {
+          coins += 500;
+          localStorage.setItem('user_coins', coins);
+          document.getElementById('coinBalance').innerText = coins.toLocaleString();
+          showToast("Success! +500 Tokens added.");
+          resetBtn();
         }).catch((err) => {
-          console.log(`Zone ${zoneId} failed, trying next zone...`, err);
-          attemptShowAd(retryCount + 1, successCallback);
+          console.log(`Zone ${zoneId} failed/skipped. Trying next...`, err);
+          attemptZoneAd(retryCount + 1);
         });
       } else {
-        attemptShowAd(retryCount + 1, successCallback);
+        console.log(`SDK Function ${fnName} not initialized yet. Trying next...`);
+        attemptZoneAd(retryCount + 1);
       }
+    }
+
+    function resetBtn() {
+      const btn = document.getElementById('watchAdBtn');
+      btn.disabled = false;
+      btn.innerText = "CLAIM";
     }
   </script>
 </body>
