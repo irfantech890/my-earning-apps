@@ -47,11 +47,6 @@
 
     .toast { position: fixed; bottom: 20px; background: #1e293b; color: #fff; border: 1px solid var(--accent-color); padding: 12px 24px; border-radius: 30px; font-size: 12px; display: none; z-index: 100; }
   </style>
-
-  <!-- Monetag Dedicated Telegram Mini App (TMA) SDK Scripts -->
-  <script src="//libtl.com/sdk.js" data-zone="12106123" data-sdk="show_12106123"></script>
-  <script src="//libtl.com/sdk.js" data-zone="12106130" data-sdk="show_12106130"></script>
-  <script src="//libtl.com/sdk.js" data-zone="12106139" data-sdk="show_12106139"></script>
 </head>
 <body>
 
@@ -97,7 +92,7 @@
           <p style="font-size:11px; color: var(--accent-color);">+500 Tokens</p>
         </div>
       </div>
-      <button class="task-btn" id="watchAdBtn" onclick="showAdWithRotation()">CLAIM</button>
+      <button class="task-btn" id="watchAdBtn" onclick="openMonetagAd()">CLAIM</button>
     </div>
   </div>
 
@@ -125,7 +120,7 @@
         coins += 1;
         energy -= 1;
         document.getElementById('coinBalance').innerText = coins.toLocaleString();
-        document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
+        document.getElementById('energyText').innerText = `${energy} / `${maxEnergy}`;
         document.getElementById('energyFill').style.width = (energy / maxEnergy * 100) + "%";
         localStorage.setItem('user_coins', coins);
         localStorage.setItem('user_energy', energy);
@@ -141,53 +136,25 @@
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    // Monetag TMA SDK Execution with 3-Zone Rotation
-    const sdkZones = ['12106123', '12106130', '12106139'];
-    let currentIdx = 0;
+    // --- MONETAG DIRECT LINK / SMARTLINK SYSTEM ---
+    // এখানে আপনার Monetag Direct Link বা SmartLink বসিয়ে দিন
+    const monetagAdLink = "https://your-monetag-direct-link-here.com"; 
 
-    function showAdWithRotation() {
-      const btn = document.getElementById('watchAdBtn');
-      btn.disabled = true;
-      btn.innerText = "Loading...";
-
-      attemptZoneAd(0);
-    }
-
-    function attemptZoneAd(retryCount) {
-      if (retryCount >= sdkZones.length) {
-        showToast("No ads available right now. Try again later.");
-        resetBtn();
-        return;
-      }
-
-      const zoneId = sdkZones[currentIdx];
-      currentIdx = (currentIdx + 1) % sdkZones.length; // Rotation
-
-      const fnName = `show_${zoneId}`;
-
-      if (typeof window[fnName] === 'function') {
-        window[fnName]({
-          ymid: userId.toString()
-        }).then(() => {
-          coins += 500;
-          localStorage.setItem('user_coins', coins);
-          document.getElementById('coinBalance').innerText = coins.toLocaleString();
-          showToast("Success! +500 Tokens added.");
-          resetBtn();
-        }).catch((err) => {
-          console.log(`Zone ${zoneId} failed/skipped. Trying next...`, err);
-          attemptZoneAd(retryCount + 1);
-        });
+    function openMonetagAd() {
+      // টেলিগ্রামের নেটিভ ব্রাউজারে লিংক ওপেন করার নিরাপদ মেথড (কোনো Access Denied দিবে না)
+      if (tg && tg.openLink) {
+        tg.openLink(monetagAdLink);
       } else {
-        console.log(`SDK Function ${fnName} not initialized yet. Trying next...`);
-        attemptZoneAd(retryCount + 1);
+        window.open(monetagAdLink, '_blank');
       }
-    }
 
-    function resetBtn() {
-      const btn = document.getElementById('watchAdBtn');
-      btn.disabled = false;
-      btn.innerText = "CLAIM";
+      // ইউজার বিজ্ঞাপন দেখার পর রিওয়ার্ড যোগ করার লজিক
+      setTimeout(() => {
+        coins += 500;
+        localStorage.setItem('user_coins', coins);
+        document.getElementById('coinBalance').innerText = coins.toLocaleString();
+        showToast("Success! +500 Tokens added.");
+      }, 2000);
     }
   </script>
 </body>
