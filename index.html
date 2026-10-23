@@ -1,347 +1,502 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Crypto Mining & Rewards Mini App</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: #151a24;
+      --accent-color: #00ff88;
+      --accent-glow: rgba(0, 255, 136, 0.35);
+      --text-color: #ffffff;
+      --text-dim: #8a99ad;
+      --warning-color: #ffaa00;
+    }
 
-    <meta charset="UTF-8">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+    }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+      overflow-x: hidden;
+    }
 
-    <title>Irfan Technology</title>
+    .header-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
 
-    <style>
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #232d3f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--accent-color);
+      border: 2px solid var(--accent-color);
+    }
 
-        .container { background-color: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+    .balance-container {
+      text-align: right;
+    }
 
-        h1 { color: #007bff; margin-bottom: 10px; }
+    .balance-title {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        p { margin-bottom: 20px; font-size: 1.1em; }
+    .balance-amount {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent-color);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
 
-        .stats { display: flex; justify-content: space-around; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 8px; }
+    .tap-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
 
-        .stat { text-align: center; }
+    .tap-button {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+      border: 4px solid var(--accent-color);
+      box-shadow: 0 0 30px var(--accent-glow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+    }
 
-        .stat-value { font-size: 1.5em; font-weight: bold; color: #28a745; }
+    .tap-button:active {
+      transform: scale(0.94);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
 
-        .stat-label { font-size: 0.9em; color: #6c757d; }
+    .tap-button i {
+      font-size: 60px;
+      color: var(--accent-color);
+    }
 
-        .button-group { display: flex; flex-direction: column; gap: 10px; }
+    .tap-text {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
 
-        button { background-color: #007bff; color: white; border: none; padding: 15px; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.3s; }
+    .energy-container {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 15px;
+    }
 
-        button:hover { background-color: #0056b3; }
+    .energy-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
 
-        .withdraw-btn { background-color: #28a745; }
+    .energy-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+    }
 
-        .withdraw-btn:hover { background-color: #218838; }
+    .energy-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: width 0.3s ease;
+    }
 
-        .reset-btn { background-color: #dc3545; }
+    .task-hub {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 24px;
+    }
 
-        .reset-btn:hover { background-color: #c82333; }
+    .hub-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+    .task-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
 
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; }
+    .task-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .task-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
 
-        input, select { width: calc(100% - 22px); padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+    .task-details h4 {
+      font-size: 14px;
+      font-weight: 600;
+    }
 
-    </style>
+    .task-details p {
+      font-size: 11px;
+      color: var(--accent-color);
+      margin-top: 2px;
+    }
 
-    
+    .task-btn {
+      background: var(--accent-color);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
 
-    <!-- *** এখানে নতুন মূল স্ক্রিপ্ট ট্যাগটি বসানো হয়েছে *** -->
+    .task-btn:disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
 
-    <script src='//libtl.com/sdk.js' data-zone='11952583' data-sdk='show_11952583'></script>
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      background: #1e293b;
+      color: var(--text-color);
+      border: 1px solid var(--accent-color);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 12px;
+      display: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+  </style>
 
+  <!-- Monetag 3 Zone Scripts (Zone IDs: 12106123, 12106130, 12106139) -->
+  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106123" async data-cfasync="false"></script>
+  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106130" async data-cfasync="false"></script>
+  <script src="https://alwingulla.com/88/tag.min.js" data-zone="12106139" async data-cfasync="false"></script>
 </head>
-
 <body>
 
-    <div class="container">
+  <!-- 1. Bot & Automation Protection Script -->
+  <script>
+    if (navigator.webdriver || window.outerWidth === 0 || window.outerHeight === 0) {
+        document.body.innerHTML = "<h2 style='color:#ff4d4d; text-align:center; margin-top:100px; font-family:sans-serif;'>Access Denied: Automated Environment Blocked</h2>";
+        throw new Error("Bot blocked");
+    }
+  </script>
 
-        <h1>Telegram Mini Self Earning App </h1>
+  <!-- Top Stats -->
+  <div class="header-card">
+    <div class="user-info">
+      <div class="user-avatar" id="uAvatar">U</div>
+      <div>
+        <div id="uName" style="font-weight: 700; font-size: 14px;">User</div>
+        <div style="font-size: 10px; color: var(--text-dim);">Global Active Member</div>
+      </div>
+    </div>
+    <div class="balance-container">
+      <div class="balance-title">Tokens</div>
+      <div class="balance-amount" id="coinBalance">0</div>
+    </div>
+  </div>
 
-        <p>Developed by Md.SUVO</p>
+  <!-- Tap Mining -->
+  <div class="tap-section">
+    <div class="tap-button" id="tapBtn">
+      <i class="fa-solid fa-bolt"></i>
+      <div class="tap-text">TAP TO MINE</div>
+    </div>
+  </div>
 
-        <div class="stats">
+  <!-- Energy Bar -->
+  <div class="energy-container">
+    <div class="energy-stats">
+      <span><i class="fa-solid fa-battery-half"></i> Energy Left</span>
+      <span id="energyText">500 / 500</span>
+    </div>
+    <div class="energy-bar-bg">
+      <div class="energy-bar-fill" id="energyFill"></div>
+    </div>
+  </div>
 
-            <div class="stat">
-
-                <div id="ads-watched" class="stat-value">0</div>
-
-                <div class="stat-label">Completed Ads</div>
-
-            </div>
-
-            <div class="stat">
-
-                <div id="earned-points" class="stat-value">0</div>
-
-                <div class="stat-label">Total Points</div>
-
-            </div>
-
-        </div>
-
-        <div class="button-group">
-
-            <button onclick="show_rewarded_interstitial()">Reward Interstitial</button>
-
-            <button onclick="show_rewarded_popup()">Reward Popup</button>
-
-            <button onclick="show_in_app_interstitial()">In-App Interstitial</button>
-
-            <button class="withdraw-btn" onclick="openWithdrawModal()">Withdraw</button>
-
-            <button class="reset-btn" onclick="resetStats()">Reset Count</button>
-
-        </div>
-
+  <!-- Task Hub -->
+  <div class="task-hub">
+    <div class="hub-title">
+      <i class="fa-solid fa-gem" style="color: var(--accent-color);"></i>
+      High Reward Tasks
     </div>
 
-    <!-- Withdraw Modal -->
-
-    <div id="withdrawModal" class="modal">
-
-        <div class="modal-content">
-
-            <span class="close" onclick="closeWithdrawModal()">&times;</span>
-
-            <h2>Withdraw Points</h2>
-
-            <form id="withdrawForm">
-
-                <select id="paymentMethod" required>
-
-                    <option value="">Select Payment Method</option>
-
-                    <option value="Bkash">Bkash</option>
-
-                    <option value="Nagad">Nagad</option>
-
-                    <option value="Rocket">Rocket</option>
-
-                </select>
-
-                <input type="text" id="accountNumber" placeholder="Enter Account Number" required>
-
-                <input type="number" id="pointsToWithdraw" placeholder="Enter Points to Withdraw" required>
-
-                <button type="submit">Send Withdraw Request</button>
-
-            </form>
-
+    <!-- Task 1 -->
+    <div class="task-card">
+      <div class="task-info">
+        <div class="task-icon"><i class="fa-solid fa-play"></i></div>
+        <div class="task-details">
+          <h4>Watch Ad Booster</h4>
+          <p>+500 Tokens (2 Min Cooldown)</p>
         </div>
-
+      </div>
+      <button class="task-btn" id="watchAdBtn" onclick="triggerRewardedAd()">CLAIM</button>
     </div>
 
-    <script>
-
-        let adsWatched = localStorage.getItem('adsWatched') ? parseInt(localStorage.getItem('adsWatched')) : 0;
-
-        let earnedPoints = localStorage.getItem('earnedPoints') ? parseInt(localStorage.getItem('earnedPoints')) : 0;
-
-        function updateStats() {
-
-            document.getElementById('ads-watched').innerText = adsWatched;
-
-            document.getElementById('earned-points').innerText = earnedPoints;
-
-            localStorage.setItem('adsWatched', adsWatched);
-
-            localStorage.setItem('earnedPoints', earnedPoints);
-
-        }
-
-        function resetStats() {
-
-            if (confirm("Are you sure you want to reset your stats? This action cannot be undone.")) {
-
-                adsWatched = 0;
-
-                earnedPoints = 0;
-
-                updateStats();
-
-                alert("Stats have been reset successfully.");
-
-            }
-
-        }
-
-        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
-
-        function show_rewarded_interstitial() {
-
-            show_11952583().then(() => {
-
-                adsWatched++;
-
-                earnedPoints += 1;
-
-                updateStats();
-
-            }).catch(e => {
-
-                console.error("Ad error:", e);
-
-            });
-
-        }
-
-        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
-
-        function show_rewarded_popup() {
-
-            show_11952583('pop').then(() => {
-
-                adsWatched++;
-
-                earnedPoints += 1;
-
-                updateStats();
-
-            }).catch(e => {
-
-                console.error("Popup ad error:", e);
-
-            });
-
-        }
-
-        
-
-        // নতুন বিজ্ঞাপন দেখানোর ফাংশন (আপডেট করা)
-
-        function show_in_app_interstitial() {
-
-            show_11952583({
-
-              type: 'inApp',
-
-              inAppSettings: {
-
-                frequency: 2,
-
-                capping: 0.1,
-
-                interval: 30,
-
-                timeout: 5,
-
-                everyPage: false
-
-              }
-
-            });
-
-            
-
-            adsWatched++;
-
-            earnedPoints += 1;
-
-            updateStats();
-
-        }
-
-        // Withdraw Modal Logic
-
-        const modal = document.getElementById('withdrawModal');
-
-        function openWithdrawModal() {
-
-            modal.style.display = 'block';
-
-        }
-
-        function closeWithdrawModal() {
-
-            modal.style.display = 'none';
-
-        }
-
-        window.onclick = function(event) {
-
-            if (event.target == modal) {
-
-                closeWithdrawModal();
-
-            }
-
-        }
-
-        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-
-            e.preventDefault();
-
-            const method = document.getElementById('paymentMethod').value;
-
-            const number = document.getElementById('accountNumber').value;
-
-            const points = parseInt(document.getElementById('pointsToWithdraw').value);
-
-            if (points > earnedPoints) {
-
-                alert("You don't have enough points to withdraw!");
-
-                return;
-
-            }
-
-            const botToken = 'aa';
-
-            const chatId = 'aaaa';
-
-            const message = `New Withdraw Request:\n\nPayment Method: ${method}\nAccount Number: ${number}\nPoints: ${points}`;
-
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-
-            fetch(url)
-
-                .then(response => response.json())
-
-                .then(data => {
-
-                    if (data.ok) {
-
-                        alert('Withdraw request sent successfully!');
-
-                        earnedPoints -= points;
-
-                        updateStats();
-
-                        closeWithdrawModal();
-
-                    } else {
-
-                        alert('Failed to send request. Please try again.');
-
-                    }
-
-                })
-
-                .catch(error => {
-
-                    console.error('Error:', error);
-
-                    alert('An error occurred. Please try again.');
-
-                });
-
+    <!-- Task 2 -->
+    <div class="task-card">
+      <div class="task-info">
+        <div class="task-icon"><i class="fa-solid fa-charging-station"></i></div>
+        <div class="task-details">
+          <h4>Instant Full Energy</h4>
+          <p>Restore 500/500 Energy</p>
+        </div>
+      </div>
+      <button class="task-btn" id="refillBtn" onclick="triggerRefillAd()">REFILL</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastMsg">Ad rewarded successfully!</div>
+
+  <script>
+    // --- TELEGRAM WEBAPP INIT ---
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.expand();
+      tg.ready();
+    }
+
+    const userId = tg?.initDataUnsafe?.user?.id || "USER_" + Math.floor(Math.random() * 899999 + 100000);
+    const userName = tg?.initDataUnsafe?.user?.first_name || "Guest User";
+
+    document.getElementById('uName').innerText = userName;
+    document.getElementById('uAvatar').innerText = userName.charAt(0).toUpperCase();
+
+    let coins = parseInt(localStorage.getItem('user_coins')) || 0;
+    let energy = parseInt(localStorage.getItem('user_energy')) || 500;
+    const maxEnergy = 500;
+    let lastAdTime = parseInt(localStorage.getItem('last_ad_time')) || 0;
+
+    document.getElementById('coinBalance').innerText = coins.toLocaleString();
+    updateEnergyUI();
+
+    document.getElementById('tapBtn').addEventListener('click', () => {
+      if (energy >= 1) {
+        coins += 1;
+        energy -= 1;
+        saveData();
+        updateEnergyUI();
+        document.getElementById('coinBalance').innerText = coins.toLocaleString();
+      } else {
+        showToast("Energy Empty! Watch an Ad to refill.");
+      }
+    });
+
+    setInterval(() => {
+      if (energy < maxEnergy) {
+        energy = Math.min(maxEnergy, energy + 1);
+        updateEnergyUI();
+        saveData();
+      }
+    }, 3000);
+
+    function updateEnergyUI() {
+      document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
+      const percentage = (energy / maxEnergy) * 100;
+      document.getElementById('energyFill').style.width = percentage + "%";
+    }
+
+    function saveData() {
+      localStorage.setItem('user_coins', coins);
+      localStorage.setItem('user_energy', energy);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastMsg');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    // --- 3-ZONE ROTATION & FALLBACK SYSTEM ---
+    const zoneIds = ['12106123', '12106130', '12106139'];
+    let currentZoneIndex = 0;
+
+    function getRotatedZoneId() {
+      const zoneId = zoneIds[currentZoneIndex];
+      currentZoneIndex = (currentZoneIndex + 1) % zoneIds.length;
+      return zoneId;
+    }
+
+    function preloadMonetagAd() {
+      const activeZone = getRotatedZoneId();
+      const fnName = `show_${activeZone}`;
+      if (typeof window[fnName] === 'function') {
+        window[fnName]({
+          type: 'preload',
+          ymid: userId.toString(),
+          requestVar: 'tma_mining_app'
+        }).then(() => {
+          console.log(`Zone ${activeZone} Preloaded Successfully.`);
+        }).catch(err => console.log("Preload Error:", err));
+      }
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(preloadMonetagAd, 2000);
+      checkAdCooldown();
+    });
+
+    function checkAdCooldown() {
+      const now = Date.now();
+      const btn = document.getElementById('watchAdBtn');
+      if (now - lastAdTime < 120000) {
+        const remainingSec = Math.ceil((120000 - (now - lastAdTime)) / 1000);
+        btn.disabled = true;
+        btn.innerText = `${remainingSec}s`;
+        setTimeout(checkAdCooldown, 1000);
+      } else {
+        btn.disabled = false;
+        btn.innerText = "CLAIM";
+      }
+    }
+
+    // Task 1: Rewarded Ad (With Page Visibility & Bot Protection)
+    function triggerRewardedAd() {
+      if (document.hidden) {
+        showToast("Please stay active on the app to watch the ad!");
+        return;
+      }
+
+      attemptShowAd(0, (rewarded) => {
+        coins += 500;
+        lastAdTime = Date.now();
+        localStorage.setItem('last_ad_time', lastAdTime);
+        saveData();
+        document.getElementById('coinBalance').innerText = coins.toLocaleString();
+        showToast("Success! +500 Tokens added.");
+        checkAdCooldown();
+        preloadMonetagAd();
+      });
+    }
+
+    // Task 2: Energy Refill Ad (With Page Visibility & Bot Protection)
+    function triggerRefillAd() {
+      if (document.hidden) {
+        showToast("Please stay active on the app to watch the ad!");
+        return;
+      }
+
+      attemptShowAd(0, (rewarded) => {
+        energy = maxEnergy;
+        updateEnergyUI();
+        saveData();
+        showToast("Energy fully restored!");
+        preloadMonetagAd();
+      });
+    }
+
+    // Fallback Ad Executor Across Your 3 Zones
+    function attemptShowAd(retryCount, successCallback) {
+      if (retryCount >= zoneIds.length) {
+        showToast("Ad not available right now. Try again later.");
+        return;
+      }
+
+      const zoneId = zoneIds[(currentZoneIndex + retryCount) % zoneIds.length];
+      const fnName = `show_${zoneId}`;
+
+      if (typeof window[fnName] === 'function') {
+        window[fnName]({
+          type: 'end',
+          ymid: userId.toString()
+        }).then((result) => {
+          successCallback(result);
+        }).catch((err) => {
+          console.log(`Zone ${zoneId} failed, trying next zone...`, err);
+          attemptShowAd(retryCount + 1, successCallback);
         });
-
-        // Initial load
-
-        updateStats();
-
-    </script>
-
+      } else {
+        attemptShowAd(retryCount + 1, successCallback);
+      }
+    }
+  </script>
 </body>
-
 </html>
